@@ -52,7 +52,7 @@ Required environment variables:
 - Prefer simple, minimal implementations over speculative abstractions.
 - Touch only files required by the task.
 - Use `todowrite` for non-trivial multi-step work.
-- Use `grep`/`rg` for exact strings and `ast-grep`/`sg` for syntax-aware searches.
+- Prefer `ast-grep`/`sg` for source-code searches, and use `grep`/`rg` for plain text or when AST-Grep is a poor fit.
 - For library, framework, SDK, API, CLI, or cloud-service questions, resolve and fetch current docs with `ctx7` before answering.
 - Suggest `/learn` after solving a new non-obvious problem.
 

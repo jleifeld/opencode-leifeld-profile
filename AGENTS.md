@@ -70,7 +70,8 @@ Strong success criteria reduce churn, rewrites, and post-hoc clarification.
 **Choose the retrieval method based on the question instead of defaulting to one tool.**
 
 - Use semantic or broad exploration only when the concept is unclear or naming is unknown.
-- Use `grep`/`rg` for exact strings, errors, imports, route names, config keys, and known symbols.
+- Prefer `ast-grep`/`sg` for source-code searches when the language is supported, even for known symbols, imports, and call sites.
+- Use `grep`/`rg` for plain text, logs, errors, config keys, filenames, generated files, or when AST-Grep cannot express the search cleanly.
 - Use LSP for definitions, references, symbols, and type-aware navigation when available.
 - Use `ast-grep`/`sg` for structural code searches where syntax matters more than text, such as matching call shapes, JSX patterns, decorators, or import forms. If no local binary exists, use `npx -y -p @ast-grep/cli ast-grep`.
 - Read only the files or line ranges needed to validate the current hypothesis.
