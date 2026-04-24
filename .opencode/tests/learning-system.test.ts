@@ -117,7 +117,7 @@ describe("LearningSystem plugin", () => {
     await rm(tempDir, { recursive: true, force: true })
   })
 
-  it("exports the current session to markdown and filters unsupported parts", async () => {
+  it("exports the current session to markdown and includes reasoning parts", async () => {
     const longOutput = `Authorization: Bearer secret-token\n${"x".repeat(1400)}`
 
     const messages = [
@@ -143,7 +143,7 @@ describe("LearningSystem plugin", () => {
           prompt: "Inspect files",
           command: "/inspect-files",
         },
-        { type: "reasoning", text: "internal reasoning should not be exported" },
+        { type: "reasoning", text: "Check github_pat_secret before deciding next step" },
       ]),
     ]
 
@@ -164,9 +164,11 @@ describe("LearningSystem plugin", () => {
     expect(content).toContain("## Assistant")
     expect(content).toContain("### Tool: read")
     expect(content).toContain("### Subtask: explore")
+    expect(content).toContain("### Reasoning")
+    expect(content).toContain("Check [redacted] before deciding next step")
     expect(content).toContain("Authorization: [redacted]")
     expect(content).toContain("[output truncated]")
-    expect(content).not.toContain("internal reasoning should not be exported")
+    expect(content).not.toContain("github_pat_secret")
   })
 
   it("bootstraps the learning index and exports the parent session for current child sessions", async () => {

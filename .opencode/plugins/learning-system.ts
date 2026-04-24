@@ -115,6 +115,11 @@ function formatPart(part: any): string | null {
     return text || null
   }
 
+  if (part.type === "reasoning") {
+    const text = redactSensitiveText(String(part.text ?? "").trim())
+    return text ? `### Reasoning\n${text}` : null
+  }
+
   if (part.type === "tool") return formatToolPart(part)
 
   if (part.type === "subtask") {
