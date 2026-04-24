@@ -10,6 +10,7 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 - Use current documentation for library/framework questions through Context7.
 - Preserve reusable project knowledge through explicit, user-approved learnings.
 - Manage context actively with Dynamic Context Pruning and the `/context` command.
+- Use local semantic code search through Lumen before falling back to broad text searches.
 
 ## Main Files
 
@@ -20,7 +21,7 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 | `tui.jsonc` | Placeholder for an isolated TUI profile. |
 | `.opencode/commands/` | Custom slash-command prompts. |
 | `.opencode/agents/` | Custom subagent definitions. |
-| `.opencode/skills/` | Reusable skill instructions, currently Context7 documentation lookup. |
+| `.opencode/skills/` | Reusable skill instructions, including Context7 docs lookup and Lumen health/reindex workflows. |
 | `.opencode/plugins/` | Custom OpenCode plugin code for context analysis and learnings. |
 | `.opencode/tests/` | Bun tests for profile contracts and plugin behavior. |
 | `.opencode/learnings/` | Project learning index, accepted learning items, usage stats, and ignored session exports. |
@@ -35,6 +36,7 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 - Always-loaded instructions: `AGENTS.md` and `.opencode/learnings/INDEX.md`.
 - Allowed structural search commands: `ast-grep`, `sg`, and their `npx @ast-grep/cli` equivalents.
 - Dynamic Context Pruning plugin: `@tarquinen/opencode-dcp@latest`.
+- Lumen semantic search plugin: `@ory/lumen-opencode`.
 - MCP servers: GitHub, Playwright, and Context7.
 
 Required environment variables:
@@ -81,6 +83,27 @@ It resolves tokenizers through `.opencode/plugins/tokenizer-registry.mjs`, using
 ```bash
 npm install js-tiktoken@latest @huggingface/transformers@^3.3.3 --prefix .opencode/plugins/vendor
 ```
+
+### Lumen Semantic Search
+
+`@ory/lumen-opencode` adds local semantic code search to OpenCode. It exposes Lumen MCP tools such as `semantic_search`, `health_check`, and `index_status`, and this profile includes two matching skills:
+
+- `doctor`: checks that the embedding backend is reachable and reports index status.
+- `reindex`: refreshes or rebuilds the current project's Lumen index.
+
+Lumen indexes projects locally, stores its SQLite index outside the repository, and seeds or refreshes the index on the first `semantic_search` call. No API key is required for Lumen itself.
+
+Requirements:
+
+- OpenCode with npm plugin support, because `opencode.jsonc` loads `@ory/lumen-opencode` from the `plugin` array.
+- A local embedding backend: either Ollama or LM Studio.
+- For the default Ollama setup, Ollama must be running and the default code embedding model must be available:
+
+```bash
+ollama pull ordis/jina-embeddings-v2-base-code
+```
+
+- Network access on first use so the plugin can install from npm and download the Lumen binary from the GitHub release, unless those artifacts are already cached.
 
 ### Learning System
 
