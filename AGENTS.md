@@ -65,7 +65,17 @@ Example plan shape:
 
 Strong success criteria reduce churn, rewrites, and post-hoc clarification.
 
-## 5. Browser Work
+## 5. Search And Code Intelligence
+
+**Choose the retrieval method based on the question instead of defaulting to one tool.**
+
+- Use semantic or broad exploration only when the concept is unclear or naming is unknown.
+- Use `grep`/`rg` for exact strings, errors, imports, route names, config keys, and known symbols.
+- Use LSP for definitions, references, symbols, and type-aware navigation when available.
+- Use `ast-grep`/`sg` for structural code searches where syntax matters more than text, such as matching call shapes, JSX patterns, decorators, or import forms. If no local binary exists, use `npx -y -p @ast-grep/cli ast-grep`.
+- Read only the files or line ranges needed to validate the current hypothesis.
+
+## 6. Browser Work
 
 - For browser automation or UI investigation, do not use Playwright directly in the parent session; load `browser-subagent` and delegate to `browser-operator`.
 

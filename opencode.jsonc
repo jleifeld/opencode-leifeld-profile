@@ -6,6 +6,16 @@
     "/Users/jannisleifeld/.config/opencode-profiles/leifeld/AGENTS.md",
     ".opencode/learnings/INDEX.md"
   ],
+  "permission": {
+    "lsp": "allow",
+    "bash": {
+      "ast-grep *": "allow",
+      "sg *": "allow",
+      "npx -y -p @ast-grep/cli ast-grep *": "allow",
+      "npx -y -p @ast-grep/cli sg *": "allow"
+    }
+  },
+  "lsp": {},
   "plugin": [
     "@tarquinen/opencode-dcp@latest"
   ],
