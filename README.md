@@ -1,6 +1,6 @@
 # Leifeld OpenCode Profile
 
-Personal OpenCode profile for cautious, codebase-first software engineering. It combines strict operating instructions, documentation lookup through Context7, GitHub and browser MCP access, context-pruning support, and a small project-learning system.
+Personal OpenCode profile for cautious, codebase-first software engineering. It combines strict operating instructions, documentation lookup through Context7, GitHub and browser MCP access, local semantic search, and a small project-learning system.
 
 ## What This Profile Optimizes For
 
@@ -9,7 +9,7 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 - Keep changes surgical: do not refactor unrelated code or modify unrelated worktree changes.
 - Use current documentation for library/framework questions through Context7.
 - Preserve reusable project knowledge through explicit, user-approved learnings.
-- Manage context actively with Dynamic Context Pruning and the `/context` command.
+- Inspect context usage with the `/context` command.
 - Use local semantic code search through Lumen before falling back to broad text searches.
 
 ## Main Files
@@ -35,7 +35,6 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 - Small model: `openai/gpt-5.4-mini`.
 - Always-loaded instructions: `AGENTS.md` and `.opencode/learnings/INDEX.md`.
 - Allowed structural search commands: `ast-grep`, `sg`, and their `npx @ast-grep/cli` equivalents.
-- Dynamic Context Pruning plugin: `@tarquinen/opencode-dcp@latest`.
 - Lumen semantic search plugin: `@ory/lumen-opencode`.
 - MCP servers: GitHub, Playwright, and Context7.
 

@@ -17,7 +17,6 @@
   },
   "lsp": {},
   "plugin": [
-    "@tarquinen/opencode-dcp@latest",
     "@ory/lumen-opencode"
   ],
   "mcp": {
