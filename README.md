@@ -16,10 +16,10 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 | --- | --- |
 | `opencode.jsonc` | Main OpenCode profile config: models, instructions, permissions, plugins, and MCP servers. |
 | `AGENTS.md` | Core agent behavior rules loaded into every session. |
-| `tui.jsonc` | Placeholder for an isolated TUI profile. |
 | `.opencode/commands/` | Custom slash-command prompts. |
-| `.opencode/agents/` | Custom subagent definitions. |
+| `.opencode/agents/` | Custom subagent definitions (currently empty). |
 | `.opencode/skills/` | Reusable skill instructions for documentation lookup and Tavily workflows. |
+| `.opencode/memory/` | Project-specific memory entries managed by the `project-memory` plugin. |
 | `.opencode/plugins/` | Custom OpenCode plugin code. |
 | `.opencode/tests/` | Bun tests for profile contracts and plugin behavior. |
 | `.xdg/opencode/` | Minimal XDG-style OpenCode config used for isolated profile bootstrapping. |
@@ -28,10 +28,11 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 
 `opencode.jsonc` sets:
 
-- Primary model: `openai/gpt-5.5-fast`.
+- Primary model: `openai/gpt-5.5`.
 - Small model: `openai/gpt-5.4-mini`.
 - Always-loaded instructions: `AGENTS.md`.
 - Allowed structural search commands: `ast-grep`, `sg`, and their `npx @ast-grep/cli` equivalents.
+- Allowed read-only commands: common `git` inspection (`status`, `diff`, `log`, `show`, `branch`, `ls-files`), `rg`, `ls`, `find`, `cat`, `bun test`, `npx ctx7@latest`, and `tvly`.
 - MCP servers: GitHub, Playwright, and Context7.
 
 Required environment variables:
