@@ -1,6 +1,6 @@
 # Leifeld OpenCode Profile
 
-Personal OpenCode profile for cautious, codebase-first software engineering. It combines strict operating instructions, documentation lookup through Context7, and GitHub and browser MCP access.
+Personal OpenCode profile for cautious, codebase-first software engineering. It combines strict operating instructions, documentation lookup through Context7, GitHub access via the `gh` CLI, and a Playwright MCP server for browser work.
 
 ## What This Profile Optimizes For
 
@@ -32,15 +32,18 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 - Small model: `openai/gpt-5.4-mini`.
 - Always-loaded instructions: `AGENTS.md`.
 - Allowed structural search commands: `ast-grep`, `sg`, and their `npx @ast-grep/cli` equivalents.
-- Allowed read-only commands: common `git` inspection (`status`, `diff`, `log`, `show`, `branch`, `ls-files`), `rg`, `ls`, `find`, `cat`, `bun test`, `npx ctx7@latest`, and `tvly`.
-- MCP servers: GitHub, Playwright, and Context7.
+- Allowed read-only commands: common `git` inspection (`status`, `diff`, `log`, `show`, `branch`, `ls-files`), `rg`, `ls`, `find`, `cat`, `bun test`, `npx ctx7@latest`, `tvly`, and `gh`.
+- MCP servers: Playwright (interactive browser automation).
+
+GitHub interactions go through the `github` skill via the `gh` CLI. Authenticate once with `gh auth login` (or set `GH_TOKEN` / `GITHUB_TOKEN`); no separate MCP token is needed.
+
+Documentation lookup goes through the `find-docs` skill via the `ctx7` CLI.
 
 Required environment variables:
 
 | Variable | Used By | Notes |
 | --- | --- | --- |
-| `GITHUB_PAT_TOKEN` | GitHub MCP | Sent as a bearer token to `https://api.githubcopilot.com/mcp`. |
-| `CONTEXT7_API_KEY` | Context7 MCP and docs workflow | Optional for basic use, useful for higher limits. |
+| `CONTEXT7_API_KEY` | `ctx7` CLI / `find-docs` skill | Optional; raises rate limits. Alternatively run `ctx7 login` for OAuth. |
 
 ## Agent Rules
 

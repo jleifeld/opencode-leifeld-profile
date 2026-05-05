@@ -30,19 +30,12 @@
       "bun test": "allow",
       "bun test *": "allow",
       "npx ctx7@latest *": "allow",
-      "tvly *": "allow"
+      "tvly *": "allow",
+      "gh *": "allow"
     }
   },
   "lsp": {},
   "mcp": {
-    "github": {
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp",
-      "headers": {
-        "Authorization": "Bearer {env:GITHUB_PAT_TOKEN}"
-      },
-      "enabled": true
-    },
     "playwright": {
       "type": "local",
       "command": [
@@ -51,13 +44,6 @@
         "@playwright/mcp@latest"
       ],
       "enabled": true
-    },
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
-      }
     }
   }
 }
