@@ -69,6 +69,10 @@ Strong success criteria reduce churn, rewrites, and post-hoc clarification.
 
 - For browser automation or UI investigation, do not use Playwright directly in the parent session; load `browser-subagent` and delegate to `browser-operator`.
 
+## 7. Project Memory
+
+When the system prompt contains a `<project-memory>` block, project-specific memories exist for this repo. Treat them as background context. To save a new memory or update an existing one, follow the `project-memory` skill — never write memory files freehand.
+
 <!-- context7 -->
 Use the `ctx7` CLI to fetch current documentation whenever the user asks about a library, framework, SDK, API, CLI tool, or cloud service -- even well-known ones like React, Next.js, Prisma, Express, Tailwind, Django, or Spring Boot. This includes API syntax, configuration, version migration, library-specific debugging, setup instructions, and CLI tool usage. Use even when you think you know the answer -- your training data may not reflect recent changes. Prefer this over web search for library docs.
 

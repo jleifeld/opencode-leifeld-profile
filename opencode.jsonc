@@ -15,9 +15,6 @@
     }
   },
   "lsp": {},
-  "plugin": [
-    "@ory/lumen-opencode"
-  ],
   "mcp": {
     "github": {
       "type": "remote",

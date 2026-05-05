@@ -29,4 +29,10 @@ describe("profile static contracts", () => {
     expect(commands).not.toContain("learnings-stats.md")
     expect(existsSync(path.join(projectRoot, ".opencode/agents/learning-extractor.md"))).toBe(false)
   })
+
+  it("does not load npm plugins", async () => {
+    const content = await readProjectFile("opencode.jsonc")
+
+    expect(content).not.toContain('"plugin"')
+  })
 })
