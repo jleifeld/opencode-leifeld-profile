@@ -65,11 +65,21 @@ Strong success criteria reduce churn, rewrites, and post-hoc clarification.
 - Use `ast-grep`/`sg` for structural code searches where syntax matters more than text, such as matching call shapes, JSX patterns, decorators, or import forms. If no local binary exists, use `npx -y -p @ast-grep/cli ast-grep`.
 - Read only the files or line ranges needed to validate the current hypothesis.
 
-## 6. Browser Work
+## 6. Output Discipline
+
+**Long tool output is the dominant context cost. Filter at the source, not after.**
+
+- Pre-filter long-running bash output before it enters context: `--json` + `--jq`, `--quiet`, `head`, `tail`, or pipe through `grep`. If you cannot predict the output size, redirect to a temp file and grep that file instead of letting the raw output land in the conversation.
+- For `gh`: use `gh run view <id> --log-failed` (never `--log`) for CI investigation. Use `--json <fields> --jq '<filter>'` on any list/view command. Never page full job logs into context.
+- For large or generated files (lockfiles, build outputs, `dist/`, generated code, files >1000 lines): use targeted line-range reads (`offset`/`limit`) or grep first. Do not read these end-to-end without a concrete reason.
+- For lockfiles specifically (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`): use `jq` or `grep` to answer "is X present, at what version" — not a full read.
+- When unsure how big a file is, check first (`wc -l`, `ls -lh`) before deciding whether a full read is appropriate.
+
+## 7. Browser Work
 
 For any task that involves driving a real browser — end-to-end testing, bug reproduction, exploring a UI, verifying rendered behavior, or scraping a page — delegate to the `browser` subagent. Do not attempt to call Playwright tools directly; they are gated off in the primary agent. The subagent returns a distilled summary; the primary agent makes any code changes that follow.
 
-## 7. Project Memory
+## 8. Project Memory
 
 When the system prompt contains a `<project-memory>` block, project-specific memories exist for this repo. Treat them as background context. To save a new memory or update an existing one, follow the `project-memory` skill — never write memory files freehand.
 

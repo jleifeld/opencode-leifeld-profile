@@ -14,6 +14,17 @@ The `gh` CLI is the canonical way to interact with GitHub from a terminal. It co
 
 Run `gh help` or `gh <command> --help` for full options.
 
+## Hard Rules (token discipline)
+
+`gh` output can be enormous — full job logs are routinely 50k+ tokens. Always filter at the source.
+
+- **Never use `gh run view <id> --log`.** Use `gh run view <id> --log-failed` to get only the failed steps. If you genuinely need a successful step's log, scope it: `gh run view <id> --log --job <job-id> | head -200` — never let the unfiltered log enter context.
+- **Always use `--json <fields> --jq '<expr>'` on list/view commands.** The default human-readable output is verbose and noisy. `gh pr list --json number,title,author,state` is one line per PR; the default is six.
+- **Use `--paginate` deliberately.** It walks all pages and concatenates results — useful for `gh api`, dangerous for issue/PR lists in large repos. Add `--limit N` or filter with `--jq '.[:N]'`.
+- **For rate limits, status, or auth checks**: tiny output, no filtering needed.
+
+If a command's output is unexpectedly large, redirect to a temp file and grep it: `gh run view 123 --log > /tmp/run.log && grep -B2 -A10 -i 'error\|failed' /tmp/run.log`.
+
 ## Prerequisites
 
 Check status first:
