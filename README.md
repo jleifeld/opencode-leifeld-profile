@@ -1,6 +1,6 @@
 # Leifeld OpenCode Profile
 
-Personal OpenCode profile for cautious, codebase-first software engineering. It combines strict operating instructions, documentation lookup through Context7, GitHub and browser MCP access, local semantic search, and a small project-learning system.
+Personal OpenCode profile for cautious, codebase-first software engineering. It combines strict operating instructions, documentation lookup through Context7, GitHub and browser MCP access, and local semantic search.
 
 ## What This Profile Optimizes For
 
@@ -8,7 +8,6 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 - Prefer verifiable work: define success criteria, run targeted checks, and avoid claiming completion without validation.
 - Keep changes surgical: do not refactor unrelated code or modify unrelated worktree changes.
 - Use current documentation for library/framework questions through Context7.
-- Preserve reusable project knowledge through explicit, user-approved learnings.
 - Inspect context usage with the `/context` command.
 - Use local semantic code search through Lumen before falling back to broad text searches.
 
@@ -22,9 +21,8 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 | `.opencode/commands/` | Custom slash-command prompts. |
 | `.opencode/agents/` | Custom subagent definitions. |
 | `.opencode/skills/` | Reusable skill instructions, including Context7 docs lookup and Lumen health/reindex workflows. |
-| `.opencode/plugins/` | Custom OpenCode plugin code for context analysis and learnings. |
+| `.opencode/plugins/` | Custom OpenCode plugin code. |
 | `.opencode/tests/` | Bun tests for profile contracts and plugin behavior. |
-| `.opencode/learnings/` | Project learning index, accepted learning items, usage stats, and ignored session exports. |
 | `.xdg/opencode/` | Minimal XDG-style OpenCode config used for isolated profile bootstrapping. |
 
 ## Active OpenCode Config
@@ -33,7 +31,7 @@ Personal OpenCode profile for cautious, codebase-first software engineering. It 
 
 - Primary model: `openai/gpt-5.5-fast`.
 - Small model: `openai/gpt-5.4-mini`.
-- Always-loaded instructions: `AGENTS.md` and `.opencode/learnings/INDEX.md`.
+- Always-loaded instructions: `AGENTS.md`.
 - Allowed structural search commands: `ast-grep`, `sg`, and their `npx @ast-grep/cli` equivalents.
 - Lumen semantic search plugin: `@ory/lumen-opencode`.
 - MCP servers: GitHub, Playwright, and Context7.
@@ -55,15 +53,12 @@ Required environment variables:
 - Use `todowrite` for non-trivial multi-step work.
 - Prefer `ast-grep`/`sg` for source-code searches, and use `grep`/`rg` for plain text or when AST-Grep is a poor fit.
 - For library, framework, SDK, API, CLI, or cloud-service questions, resolve and fetch current docs with `ctx7` before answering.
-- Suggest `/learn` after solving a new non-obvious problem.
 
 ## Custom Commands
 
 | Command | Purpose |
 | --- | --- |
 | `/context` | Calls the `context_usage` tool and summarizes token usage by source. |
-| `/learn` | Exports the current session, proposes up to five reusable learnings, and saves only user-approved items. |
-| `/learnings-stats` | Reads learning usage stats and reports the most-used and unused learning items. |
 
 ## Custom Tools And Plugins
 
@@ -104,21 +99,6 @@ ollama pull ordis/jina-embeddings-v2-base-code
 
 - Network access on first use so the plugin can install from npm and download the Lumen binary from the GitHub release, unless those artifacts are already cached.
 
-### Learning System
-
-`.opencode/plugins/learning-system.ts` exposes `learning_export_session` and tracks reads of accepted learning items.
-
-The learning workflow is intentionally explicit:
-
-1. `/learn` exports the effective session to `.opencode/learnings/exports/`.
-2. The hidden `learning-extractor` subagent reads the export and proposes durable, project-specific learnings.
-3. The user approves, edits, rejects, or merges each candidate.
-4. Approved learnings are saved under `.opencode/learnings/items/`.
-5. `.opencode/learnings/INDEX.md` is regenerated from accepted items.
-6. Reads of files under `.opencode/learnings/items/` update `.opencode/learnings/.stats.json`.
-
-Generated exports and stats are ignored by git; accepted learning items are intended to be committed.
-
 ## Documentation Lookup
 
 The `find-docs` skill and `AGENTS.md` both require Context7 for current library documentation. The required workflow is:
@@ -138,14 +118,6 @@ Tests are configured with Bun in `bunfig.toml`:
 bun test
 ```
 
-Current test coverage checks:
-
-- Learning exports include text, tool output, subtasks, and reasoning while redacting common secrets.
-- `/learn` exports the parent session when invoked from a child command session.
-- Learning item reads increment `.stats.json`.
-- Reads outside `.opencode/learnings/items/` are ignored for stats.
-- Static contracts keep the learning index, `/learn` command, and subagent safety boundaries wired correctly.
-
 ## Dependency Notes
 
 The profile has small local dependency manifests in `.opencode/`, `.xdg/opencode/`, and `.opencode/plugins/vendor/`. Their `node_modules` directories are local runtime state and are ignored by nested `.gitignore` files.
@@ -160,12 +132,6 @@ npm install --prefix .opencode/plugins/vendor
 
 ## Git Hygiene
 
-The root `.gitignore` keeps the learning system practical:
-
-- `.opencode/learnings/exports/` is ignored because exports are session artifacts.
-- `.opencode/learnings/.stats.json` is ignored because stats are local usage telemetry.
-- `.opencode/learnings/INDEX.md` and future `.opencode/learnings/items/*.md` files remain trackable.
-
 Before committing profile changes, run:
 
 ```bash
@@ -177,6 +143,4 @@ git status --short
 
 - Keep `AGENTS.md`, `opencode.jsonc`, and tests aligned when changing behavior.
 - Add or update tests for plugin behavior and command contracts.
-- Do not manually edit `.opencode/learnings/.stats.json`.
-- Regenerate `.opencode/learnings/INDEX.md` through `/learn` when adding accepted learning items.
 - Keep vendor tokenizer dependencies installed if `/context` reports missing tokenizer packages.

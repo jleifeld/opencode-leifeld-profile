@@ -2,17 +2,6 @@
 
 **Tradeoff:** bias toward caution over speed for non-trivial work. For trivial tasks, use judgment.
 
-## Project Learnings
-
-The project learning index is loaded via `opencode.jsonc` instructions.
-
-When the current task clearly resembles an entry from the learning index, read the matching file under `.opencode/learnings/items/` before proceeding.
-
-Do not read all learning files by default.
-Do not use `.opencode/learnings/exports/` for routine retrieval.
-
-After solving a new non-obvious problem, suggest running `/learn` at the end of the session.
-
 ## 1. Think Before Coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs early.**
