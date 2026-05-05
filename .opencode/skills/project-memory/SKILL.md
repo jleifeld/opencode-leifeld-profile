@@ -16,6 +16,8 @@ Project memory is a per-repo store of facts that are only meaningful inside this
 
 When a `<project-memory>` block is present in the system prompt, the project has existing memories. Use them as background context. The block includes the absolute `dir` path — read individual memory files with `Read` on `<dir>/<slug>.md` when an index entry looks relevant.
 
+**Index hygiene.** If the injected `<project-memory>` block contains a `## Skipped (malformed frontmatter)` section, those files have invalid frontmatter and are invisible to future sessions. Open them, fix the frontmatter, and write again to clear the warning.
+
 ## Save when
 
 - You discover a non-obvious project fact (env quirk, undocumented invariant, "looks broken but is intentional").
@@ -38,7 +40,7 @@ When unsure: don't save. False memories are worse than missing ones.
 1. Resolve the memory dir from the `<project-memory>` block's `dir` attribute. If no block is present (no memories yet), the dir is `<project-root>/.opencode/memory/` — create it via `Write` on the first file.
 2. Pick a kebab-case slug. First check existing entries — prefer updating a near-duplicate over creating a new file.
 3. `Write` the memory file at `<dir>/<slug>.md` using the schema below.
-4. In the same turn, update `<dir>/MEMORY.md`: add or replace the line for this slug.
+4. That's it. `MEMORY.md` is auto-maintained — the plugin rebuilds it from frontmatter after every memory file write. Never edit `MEMORY.md` directly; your changes will be overwritten on the next save.
 
 ### Memory file schema
 
@@ -62,7 +64,9 @@ The thing worth remembering.
 - PR / issue / commit refs
 ```
 
-### MEMORY.md format
+### MEMORY.md (auto-generated, do not edit)
+
+The plugin generates `MEMORY.md` from each memory file's frontmatter:
 
 ```markdown
 # Project Memory
@@ -71,14 +75,13 @@ The thing worth remembering.
 - `<slug>` — <description from frontmatter>
 ```
 
-The `description` in each entry must match the `description` field of the file's frontmatter. Keep it self-contained — the index hook is what future sessions see without reading the full file.
+Keep each `description` self-contained — the index hook is what future sessions see without reading the full file.
 
 ## Updating an existing memory
 
 1. `Read` the existing file.
-2. `Edit` the body (and `description` if it changed).
-3. If `description` changed, update the matching line in `MEMORY.md`.
+2. `Edit` the body (and `description` if it changed). The index will rebuild automatically.
 
 ## Removing a memory
 
-Delete the file (via Bash `rm`) and remove its line from `MEMORY.md` in the same turn.
+Delete the file via Bash `rm`. The index rebuilds on the next memory file write. If you want the index updated immediately, re-`Write` any other memory file with its current contents to trigger a rebuild.
