@@ -65,7 +65,11 @@ Strong success criteria reduce churn, rewrites, and post-hoc clarification.
 - Use `ast-grep`/`sg` for structural code searches where syntax matters more than text, such as matching call shapes, JSX patterns, decorators, or import forms. If no local binary exists, use `npx -y -p @ast-grep/cli ast-grep`.
 - Read only the files or line ranges needed to validate the current hypothesis.
 
-## 6. Project Memory
+## 6. Browser Work
+
+For any task that involves driving a real browser — end-to-end testing, bug reproduction, exploring a UI, verifying rendered behavior, or scraping a page — delegate to the `browser` subagent. Do not attempt to call Playwright tools directly; they are gated off in the primary agent. The subagent returns a distilled summary; the primary agent makes any code changes that follow.
+
+## 7. Project Memory
 
 When the system prompt contains a `<project-memory>` block, project-specific memories exist for this repo. Treat them as background context. To save a new memory or update an existing one, follow the `project-memory` skill — never write memory files freehand.
 
