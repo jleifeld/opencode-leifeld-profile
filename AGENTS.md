@@ -69,10 +69,11 @@ Strong success criteria reduce churn, rewrites, and post-hoc clarification.
 
 **Long tool output is the dominant context cost. Filter at the source, not after.**
 
-- Pre-filter long-running bash output before it enters context: `--json` + `--jq`, `--quiet`, `head`, `tail`, or pipe through `grep`. If you cannot predict the output size, redirect to a temp file and grep that file instead of letting the raw output land in the conversation.
-- For `gh`: use `gh run view <id> --log-failed` (never `--log`) for CI investigation. Use `--json <fields> --jq '<filter>'` on any list/view command. Never page full job logs into context.
-- For large or generated files (lockfiles, build outputs, `dist/`, generated code, files >1000 lines): use targeted line-range reads (`offset`/`limit`) or grep first. Do not read these end-to-end without a concrete reason.
-- For lockfiles specifically (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`): use `jq` or `grep` to answer "is X present, at what version" — not a full read.
+- Pre-filter long-running bash output before it enters context: `--json` + `--jq`, `--quiet`, native `--limit` options, or a narrow search with bounded context. If you cannot predict the output size, redirect to a temp file and search that file instead of letting the raw output land in the conversation.
+- For `gh`: inspect metadata first with `gh run view <id> --json jobs --jq '<filter>'`. Do not stream CI logs directly into context, including `--log-failed`, unless the failed step is already known to be small. If logs are needed, redirect them to a temp file and return only relevant snippets.
+- For PR diffs and file retrieval: start with filename-level output. Do not pull patch bodies for lockfiles, generated files, bundled files, traces, or `dist/` output unless that exact patch is required.
+- For large or generated files (lockfiles, build outputs, `dist/`, generated code, traces, files >1000 lines): use exact patterns, narrow paths/includes, and targeted line-range reads (`offset`/`limit`). Avoid broad `Grep` searches over these files.
+- For lockfiles specifically (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`): use `jq`, package-manager metadata commands, or narrowly scoped search to answer "is X present, at what version" — not a full read.
 - When unsure how big a file is, check first (`wc -l`, `ls -lh`) before deciding whether a full read is appropriate.
 
 ## 7. Browser Work

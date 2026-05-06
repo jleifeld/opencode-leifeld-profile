@@ -18,12 +18,12 @@ Run `gh help` or `gh <command> --help` for full options.
 
 `gh` output can be enormous — full job logs are routinely 50k+ tokens. Always filter at the source.
 
-- **Never use `gh run view <id> --log`.** Use `gh run view <id> --log-failed` to get only the failed steps. If you genuinely need a successful step's log, scope it: `gh run view <id> --log --job <job-id> | head -200` — never let the unfiltered log enter context.
+- **Never stream CI logs directly into context, including `gh run view <id> --log-failed`.** Inspect metadata first with `gh run view <id> --json jobs --jq '<filter>'`. If logs are still needed, redirect the specific job log to a temp file and search that file.
 - **Always use `--json <fields> --jq '<expr>'` on list/view commands.** The default human-readable output is verbose and noisy. `gh pr list --json number,title,author,state` is one line per PR; the default is six.
 - **Use `--paginate` deliberately.** It walks all pages and concatenates results — useful for `gh api`, dangerous for issue/PR lists in large repos. Add `--limit N` or filter with `--jq '.[:N]'`.
 - **For rate limits, status, or auth checks**: tiny output, no filtering needed.
 
-If a command's output is unexpectedly large, redirect to a temp file and grep it: `gh run view 123 --log > /tmp/run.log && grep -B2 -A10 -i 'error\|failed' /tmp/run.log`.
+If a command's output may be large, redirect it to a temp file and search it: `gh run view 123 --job 456 --log-failed > "$TMPDIR/run.log" && rg -n -C 8 'error|failed|timeout' "$TMPDIR/run.log"`.
 
 ## Prerequisites
 
@@ -66,9 +66,9 @@ export GH_TOKEN=ghp_xxx          # or GITHUB_TOKEN
 ### Reading a PR end-to-end
 
 ```bash
-gh pr view 42 --json title,state,author,body,reviewDecision,statusCheckRollup
-gh pr diff 42
-gh pr checks 42
+gh pr view 42 --json title,state,author,body,reviewDecision,statusCheckRollup --jq '{title,state,author,reviewDecision,statusCheckRollup}'
+gh pr diff 42 --name-only
+gh pr checks 42 --json name,state,bucket,link,workflow
 ```
 
 The `--json` flag returns structured output; combine with `--jq '<expr>'` to filter.
@@ -84,8 +84,10 @@ Pass the body via `--body-file` for multi-line content, or via heredoc with `--b
 ### Inspecting CI failures
 
 ```bash
-gh run list --branch main --limit 5
-gh run view <run-id> --log-failed
+gh run list --branch main --limit 5 --json databaseId,displayTitle,status,conclusion,workflowName
+gh run view <run-id> --json jobs --jq '.jobs[] | select(.conclusion=="failure") | {id,name,conclusion,steps: [.steps[]? | select(.conclusion=="failure") | {name,conclusion}]}'
+gh run view <run-id> --job <job-id> --log-failed > "$TMPDIR/gh-failed.log"
+rg -n -C 8 'Error|Failed|Timeout|expect|locator' "$TMPDIR/gh-failed.log"
 ```
 
 ### Hitting the REST API directly
