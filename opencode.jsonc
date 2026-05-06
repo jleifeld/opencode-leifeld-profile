@@ -45,6 +45,10 @@
         "@playwright/mcp@latest"
       ],
       "enabled": true
+    },
+    "semble": {
+      "type": "local",
+      "command": ["uvx", "--from", "semble[mcp]", "semble"]
     }
   }
 }
