@@ -80,7 +80,13 @@ Strong success criteria reduce churn, rewrites, and post-hoc clarification.
 
 For any task that involves driving a real browser — end-to-end testing, bug reproduction, exploring a UI, verifying rendered behavior, or scraping a page — delegate to the `browser` subagent. Do not attempt to call Playwright tools directly; they are gated off in the primary agent. The subagent returns a distilled summary; the primary agent makes any code changes that follow.
 
-## 8. Project Memory
+## 8. Noisy Information Gathering
+
+Use the `context-investigator` subagent for investigation that is likely to involve high-output sources: GitHub CI logs, PR diffs, workflow artifacts, Playwright traces, generated files, lockfiles, bundled `dist/` files, large local logs, broad unknown-name searches, or API responses that may be large. The subagent acts as a context firewall and must return only concise findings, evidence references, conclusions, confidence, and remaining unknowns.
+
+Do routine source navigation directly in the main agent when the target files or symbols are already known and the expected output is small.
+
+## 9. Project Memory
 
 When the system prompt contains a `<project-memory>` block, project-specific memories exist for this repo. Treat them as background context. To save a new memory or update an existing one, follow the `project-memory` skill — never write memory files freehand.
 

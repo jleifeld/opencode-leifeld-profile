@@ -18,6 +18,7 @@ Run `gh help` or `gh <command> --help` for full options.
 
 `gh` output can be enormous — full job logs are routinely 50k+ tokens. Always filter at the source.
 
+- If a GitHub task may involve CI logs, PR diffs, artifacts, broad file retrieval, or large API responses, the parent agent should delegate the investigation to `context-investigator` instead of running those commands directly in the main context.
 - **Never stream CI logs directly into context, including `gh run view <id> --log-failed`.** Inspect metadata first with `gh run view <id> --json jobs --jq '<filter>'`. If logs are still needed, redirect the specific job log to a temp file and search that file.
 - **Always use `--json <fields> --jq '<expr>'` on list/view commands.** The default human-readable output is verbose and noisy. `gh pr list --json number,title,author,state` is one line per PR; the default is six.
 - **Use `--paginate` deliberately.** It walks all pages and concatenates results — useful for `gh api`, dangerous for issue/PR lists in large repos. Add `--limit N` or filter with `--jq '.[:N]'`.
